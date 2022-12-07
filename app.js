@@ -4,6 +4,7 @@ require("./config/database").connect();
 const bcrypt = require("bcryptjs/dist/bcrypt");
 const jwt = require("jsonwebtoken")
 const express = require("express");
+const auth = require("./middleware/auth")
 
 const app = express()
 
@@ -89,7 +90,7 @@ app.post("/login", async (req, res) => {
       );
 
       // save user token
-      user.token - token;
+      user.token = token;
 
       //user
       res.status(200).json(user);
@@ -98,6 +99,10 @@ app.post("/login", async (req, res) => {
   } catch (err) {
     console.log(err)
   }
+})
+
+app.post("/welcome", auth, (req, res) => {
+  res.status(200).send("Welcome !!!")
 })
 
 module.exports = app

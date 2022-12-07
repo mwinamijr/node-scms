@@ -1,58 +1,48 @@
 const bcrypt = require("bcryptjs/dist/bcrypt");
 const jwt = require("jsonwebtoken")
-const auth = require("../middleware/auth")
 
-// Logic goes here
+
 const User = require("../model/user")
+const { registerValidation, loginValidation } = require("../middleware/validation")
+const TOKEN_KEY = process.env.TOKEN_KEY
+
 
 //Register
 exports.register = async (req, res) => {
   //our register logic goes here
   try {
-    // get user input
-    const { first_name, last_name, email, password } = req.body;
-
+    
     // validate user input
-    if (!(email && password && first_name && last_name )) {
-      res.status(400).send("All input is required")
+    const { error, value } = registerValidation(req.body);
+    if (error) {
+      return res.status(400).send(error.details[0].message)
     }
 
     // check if user already exists
     // validate if user exist in our database
 
-    const oldUser = await User.findOne({ email });
+    const oldUser = await User.findOne({ email: req.body.email });
 
     if ( oldUser ) {
       return res.status(409).send(" User already exist. Please login!")
     }
 
-    // encrypt user password
-    encryptedPassword = await bcrypt.hash(password, 10);
+    const createUserObj = async (req) => {
+      return {
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        email: req.body.email,
+        password: bcrypt.hashSync(req.body.password, 10),
+        phone: req.body.phone,
+      };
+    }
 
-    //create user in our database
-    const user = await User.create({
-      first_name: first_name.toLowerCase(),
-      last_name: last_name.toLowerCase(),
-      email: email.toLowerCase(),
-      password: encryptedPassword,
-    });
-
-    // create token
-    const token = jwt.sign(
-      { user_id: user._id, email },
-      process.env.TOKEN_KEY,
-      {
-        expiresIn: "2h",
-      }
-    );
-
-    // save user token
-    user.token = token;
-
-    // return new user
-    res.status(201).json(user);
+    const newUser = await createUserObj(req)
+    const savedUser = await User.create(newUser)
+    return res.status(200).send({message: "User created successfully!", user: savedUser})
   } catch (err) {
     console.log(err)
+    return res.status(400).send({ error: "User not created!", error: err})
   }
     
 }

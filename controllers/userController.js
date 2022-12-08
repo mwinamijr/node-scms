@@ -85,3 +85,16 @@ exports.updateUser = async (req, res) => {
     res.status(400).send({ error: "An error has occured, unable to update user!"})
   }
 }
+
+// delete user
+exports.deleteUser = async (req, res) => {
+  try {
+    const deletedUser = await User.findByIdAndDelete(req.params.userId) //the await is very important here
+    if (!deletedUser) {
+      return res.status(400).send({ message: " Could not delete user"})
+    }
+    return res.status(200).send({ message: "User deleted successfully"})
+  } catch (error) {
+    return res.status(400).send({ error: "An error has occurd, unable to delete user"})
+  }
+}

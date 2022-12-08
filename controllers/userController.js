@@ -50,35 +50,23 @@ exports.register = async (req, res) => {
 //Login
 exports.login = async (req, res) => {
   //our login logic goes here
+  const  { error } = loginValidation(req.body);
+  if (error) return res.status(400).send(error.details[0].message)
+
+  // get user
+  const foundUser = await User.findOne({ email: req.body.email})
+  if (!foundUser) return res.status(400).send({ message: "Invalid login credentials"})
+
   try {
-    // get user input
-    const { email, password } = req.body;
+    const isMatch = await bcrypt.compareSync(req.body.password, foundUser.password)
+    if (!isMatch) return res.status(400).send({ message: "Invalid password"})
 
-    // validate user input 
-    if (!(email && password)) {
-      res.status(400).send("All input is required!")
-    }
-    // validate if user exist in our database
-    const user = await User.findOne({ email });
+    // create and assign jwt
+    const token = await jwt.sign({_id: foundUser._id}, TOKEN_KEY)
 
-    if (user && ( await bcrypt.compare(password, user.password))) {
-      // create token
-      const token = jwt.sign(
-        { user_id: user._id, email },
-        process.env.TOKEN_KEY,
-        {
-          expiresIn: "2h",
-        }
-      );
-
-      // save user token
-      user.token = token;
-
-      //user
-      res.status(200).json(user);
-    }
-    res.status(400).send("Invalid credentials!")
-  } catch (err) {
-    console.log(err)
+    return res.status(200).header("auth-token", token).send({"auth-token": token, userId: foundUser._id})
+  } catch (error) {
+    console.log(error)
+    return res.status(400).send(error)
   }
 }

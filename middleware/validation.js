@@ -6,7 +6,8 @@ function registerValidation(data) {
     lastName: joi.string().min(4).required(),
     email: joi.string().min(6).email().required(),
     password: joi.string().min(5).required(),
-    phone: joi.string().min(10).max(10)
+    phone: joi.string().min(10).max(10),
+    isAdmin: joi.boolean()
   })
   return schema.validate(data)
 }

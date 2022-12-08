@@ -33,6 +33,7 @@ exports.register = async (req, res) => {
         lastName: req.body.lastName,
         email: req.body.email,
         password: bcrypt.hashSync(req.body.password, 10),
+        isAdmin: req.body.isAdmin,
         phone: req.body.phone,
       };
     }
@@ -98,3 +99,12 @@ exports.deleteUser = async (req, res) => {
     return res.status(400).send({ error: "An error has occurd, unable to delete user"})
   }
 }
+exports.users = async (req, res, next) => {
+  try {
+    const users = await User.find({})
+    res.json(users)
+  } catch (error) {
+    res.status(400)
+    next(Error)
+  }
+};

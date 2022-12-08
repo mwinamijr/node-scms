@@ -99,7 +99,7 @@ exports.deleteUser = async (req, res) => {
     return res.status(400).send({ error: "An error has occurd, unable to delete user"})
   }
 }
-exports.users = async (req, res, next) => {
+exports.usersList = async (req, res, next) => {
   try {
     const users = await User.find({})
     res.json(users)
@@ -108,3 +108,12 @@ exports.users = async (req, res, next) => {
     next(Error)
   }
 };
+
+exports.userDetails = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.params.userId)
+    res.json(user)
+  } catch (error) {
+    res.status(400).send({ message: "User Not found!"})
+  }
+}

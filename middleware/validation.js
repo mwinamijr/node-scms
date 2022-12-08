@@ -20,4 +20,12 @@ function loginValidation(data) {
   return schema.validate(data)
 }
 
-module.exports = { registerValidation, loginValidation }
+function studentAddValidation(data) {
+  const schema = joi.object({
+    firstName: joi.string().min(4).required(),
+    lastName: joi.string().min(4).required(),
+  })
+  return schema.validate(data)
+}
+
+module.exports = { registerValidation, loginValidation, studentAddValidation }

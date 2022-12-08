@@ -70,3 +70,18 @@ exports.login = async (req, res) => {
     return res.status(400).send(error)
   }
 }
+
+// update user
+exports.updateUser = async (req, res) => {
+  try{
+    req.body.password = bcrypt.hashSync(req.body.password, 10); //encrypt password before updating
+    const updatedUser = await User.findByIdAndUpdate(req.params.userId, {$set: req.body}, { new: true })
+    
+    if (!updatedUser) {
+      return res.status(400).send({ message: "Could not update user"})
+    }
+    return res.status(200).send({ message: "User updated successfully", updatedUser})
+  } catch (error) {
+    res.status(400).send({ error: "An error has occured, unable to update user!"})
+  }
+}

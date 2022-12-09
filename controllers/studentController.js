@@ -19,7 +19,7 @@ exports.addStudent = async (req, res) => {
     // check if student already exists
     // validate if student exist in our database
 
-    const oldStudent = await User.findOne({ email: req.body.addmissionNumber });
+    const oldStudent = await Student.findOne({ email: req.body.addmissionNumber });
 
     if ( oldStudent ) {
       return res.status(409).send(` Student with admission number ${req.body.addmissionNumber } already exist.`)
@@ -33,6 +33,7 @@ exports.addStudent = async (req, res) => {
         lastName: req.body.lastName,
         birthday: req.body.birthday,
         gender: req.body.gender,
+        classLevel: req.body.classLevel,
         parentContact: req.body.parentContact,
         region: req.body.region,
         city: req.body.city,
@@ -43,11 +44,11 @@ exports.addStudent = async (req, res) => {
     }
 
     const newstudent = await createStudentObj(req)
-    const savedStudent = await User.create(newstudent)
-    return res.status(200).send({message: "Student created successfully!", user: savedStudent})
+    const savedStudent = await Student.create(newstudent)
+    return res.status(200).send({message: "Student created successfully!", student: savedStudent})
   } catch (error) {
     console.log(error)
-    return res.status(400).send({ message: "User not created!", error: error})
+    return res.status(400).send({ message: "Student not created!", error: error})
   }
     
 }

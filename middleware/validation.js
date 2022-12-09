@@ -25,6 +25,8 @@ function studentAddValidation(data) {
     addmissionNumber: joi.number().required(),
     firstName: joi.string().min(4).required(),
     lastName: joi.string().min(4).required(),
+    gender: joi.string().min(4).max(6).required(),
+    classLevel: joi.string().required(),
   })
   return schema.validate(data)
 }

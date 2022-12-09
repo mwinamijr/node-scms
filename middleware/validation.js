@@ -22,6 +22,7 @@ function loginValidation(data) {
 
 function studentAddValidation(data) {
   const schema = joi.object({
+    addmissionNumber: joi.number().required(),
     firstName: joi.string().min(4).required(),
     lastName: joi.string().min(4).required(),
   })

@@ -19,7 +19,7 @@ exports.addStudent = async (req, res) => {
     // check if student already exists
     // validate if student exist in our database
 
-    const oldStudent = await Student.findOne({ email: req.body.addmissionNumber });
+    const oldStudent = await Student.findOne({ addmissionNumber: req.body.addmissionNumber });
 
     if ( oldStudent ) {
       return res.status(409).send(` Student with admission number ${req.body.addmissionNumber } already exist.`)

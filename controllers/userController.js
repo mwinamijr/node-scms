@@ -2,8 +2,8 @@ const bcrypt = require("bcryptjs/dist/bcrypt");
 const jwt = require("jsonwebtoken")
 
 
-const User = require("../model/user")
-const { registerValidation, loginValidation } = require("../middleware/validation")
+const User = require("../model/User")
+const { registerValidation, loginValidation } = require("../middleware/user.validation")
 const TOKEN_KEY = process.env.TOKEN_KEY
 
 

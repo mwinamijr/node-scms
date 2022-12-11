@@ -7,9 +7,9 @@ const userSchema = new mongoose.Schema(
   email: { type: String, unique: true, lowercase: true },
   password: { type: String },
   phone: { type: String, match: /^[0-9]{10}$/ },
-  isAdmin: { type: Boolean, default: false },
+  userRole: [{ type: String, lowercase: true }],
   },
   { timestamps: true}
 );
 
-module.exports = mongoose.model("user", userSchema)
+module.exports = mongoose.model("User", userSchema)

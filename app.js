@@ -6,12 +6,14 @@ const app = express()
 
 const userRoute = require("./routes/userRoutes")
 const studentRoute = require("./routes/studentRoutes")
+const schoolRoute = require("./routes/schoolRoutes")
 
 app.use(express.json())
 
 //routes to handle requests
 app.use("/users", userRoute)
 app.use("/students", studentRoute)
+app.use("/school", schoolRoute)
 
 //handle error requests
 app.get("/", (req, res) => {

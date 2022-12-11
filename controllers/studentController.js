@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken")
 
 const Student = require("../model/student")
-const { studentAddValidation } = require("../middleware/validation")
+const { studentAddValidation } = require("../middleware/user.validation")
 const TOKEN_KEY = process.env.TOKEN_KEY
 
 

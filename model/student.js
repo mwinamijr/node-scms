@@ -1,4 +1,4 @@
-const { model } = require("mongoose")
+const { model, Schema } = require("mongoose")
 
 mongoose = require("mongoose")
 
@@ -10,15 +10,20 @@ const studentSchema = new mongoose.Schema(
     lastName: { type: String, lowercase: true },
     gender: {type: String, lowercase:true },
     birthday: { type: Date, default: null },
-    classLevel: { type: String, lowercase: true },
+    classLevel: { 
+      type: Schema.Types.ObjectId,
+      ref: "ClassLevel"
+     },
     parentContact: { type: String, match: /^[0-9]{10}$/ },
     premsNumber: { type: String, default: null },
     stdViiNumber: { type: String, default: null },
-    region: { type: String, default: null, lowercase: true },
-    city: { type: String, default: null, lowercase: true },
-    street: { type: String, default: null, lowercase: true },
+    address: {
+      region: { type: String, default: null, lowercase: true },
+      city: { type: String, default: null, lowercase: true },
+      street: { type: String, default: null, lowercase: true },
+    },
   },
   { timestamps: true}
 )
 
-module.exports = mongoose.model("student", studentSchema)
+module.exports = mongoose.model("Student", studentSchema)

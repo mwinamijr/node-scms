@@ -10,15 +10,15 @@ exports.addStudent = async (req, res) => {
   //our add student logic goes here
   try {
     
-    // validate user input
+    /* validate student input
     const { error, value } = studentAddValidation(req.body);
     if (error) {
       return res.status(400).send(error.details[0].message)
     }
-
+    */
+   
     // check if student already exists
     // validate if student exist in our database
-
     const oldStudent = await Student.findOne({ addmissionNumber: req.body.addmissionNumber });
 
     if ( oldStudent ) {
@@ -36,7 +36,7 @@ exports.addStudent = async (req, res) => {
         classLevel: req.body.classLevel,
         parentContact: req.body.parentContact,
         region: req.body.region,
-        city: req.body.city,
+        address: req.body.address,
         street: req.body.street,
         premsNumber: req.body.premsNumber,
         stdViiNumber: req.body.stdViiNumber,
@@ -47,7 +47,7 @@ exports.addStudent = async (req, res) => {
     const savedStudent = await Student.create(newstudent)
     return res.status(200).send({message: "Student created successfully!", student: savedStudent})
   } catch (error) {
-    console.log(error)
+    
     return res.status(400).send({ message: "Student not created!", error: error})
   }
     
@@ -56,13 +56,14 @@ exports.addStudent = async (req, res) => {
 // update student
 exports.updateStudent = async (req, res) => {
   try{
-    const updatedStudent = await User.findByIdAndUpdate(req.params.studentId, {$set: req.body}, { new: true })
+    const updatedStudent = await Student.findByIdAndUpdate(req.params.studentId, {$set: req.body}, { new: true })
     
     if (!updatedStudent) {
       return res.status(400).send({ message: "Could not update student"})
     }
     return res.status(200).send({ message: "Student updated successfully", updatedStudent})
   } catch (error) {
+    console.log(error)
     res.status(400).send({ error: "An error has occured, unable to update student!"})
   }
 }
@@ -70,13 +71,13 @@ exports.updateStudent = async (req, res) => {
 // delete student
 exports.deleteStudent = async (req, res) => {
   try {
-    const deletedStudent = await User.findByIdAndDelete(req.params.studentId) //the await is very important here
+    const deletedStudent = await Student.findByIdAndDelete(req.params.studentId) //the await is very important here
     if (!deletedStudent) {
       return res.status(400).send({ message: " Could not delete student"})
     }
     return res.status(200).send({ message: "Student deleted successfully"})
   } catch (error) {
-    return res.status(400).send({ error: "An error has occurd, unable to delete user"})
+    return res.status(400).send({ error: "An error has occurd, unable to delete student"})
   }
 }
 exports.studentsList = async (req, res, next) => {

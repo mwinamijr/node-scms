@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken")
 
 const Student = require("../model/student")
+const classLevel = require("../model/school")
 const { studentAddValidation } = require("../middleware/user.validation")
 const TOKEN_KEY = process.env.TOKEN_KEY
 
@@ -24,6 +25,8 @@ exports.addStudent = async (req, res) => {
     if ( oldStudent ) {
       return res.status(409).send(` Student with admission number ${req.body.addmissionNumber } already exist.`)
     }
+    const clevel = await classLevel.findOne({className: req.body.classLevel})
+    //console.log(clevel)
 
     const createStudentObj = async (req) => {
       return {
@@ -33,7 +36,7 @@ exports.addStudent = async (req, res) => {
         lastName: req.body.lastName,
         birthday: req.body.birthday,
         gender: req.body.gender,
-        classLevel: req.body.classLevel,
+        classLevel: clevel,
         parentContact: req.body.parentContact,
         region: req.body.region,
         address: req.body.address,

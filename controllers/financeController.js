@@ -1,6 +1,6 @@
 const Student = require("../model/student")
-//const User = require("../model/user")
-const Receipt = require("../model/finance")
+const User = require("../model/User")
+const {Receipt, Payment } = require("../model/finance")
 
 // Add receipt
 exports.addReceipt = async (req, res) => {
@@ -79,5 +79,86 @@ exports.receiptDetails = async (req, res, next) => {
     res.json(receipt)
   } catch (error) {
     res.status(400).send({ message: "Receipt Not found!"})
+  }
+}
+
+// Add payment
+exports.addPayment = async (req, res) => {
+  //our add payment logic goes here
+  try {
+    // check if payment already exists
+    // validate if Payment exist in our database
+    const oldPayment = await Payment.findOne({ paymentNumber: req.body.PaymentNumber });
+
+    //console.log(req.body)
+    if ( oldPayment ) {
+      return res.status(409).send({message:` Payment with number ${req.body.paymentNumber } already exist.`, oldPayment})
+    }
+    const user = await User.findOne({email: req.body.user})
+    //console.log(user)
+    const createPaymentObj = async (req) => {
+      return {
+        paymentNumber: req.body.paymentNumber,
+        paidTo: req.body.paidTo,
+        paidFor: req.body.paidFor,
+        user: user,
+        amount: req.body.amount
+      };
+    }
+
+    const newPayment = await createPaymentObj(req)
+    const savedPayment = await Payment.create(newPayment)
+    return res.status(200).send({message: "Payment created successfully!", payment: savedPayment})
+  } catch (error) {
+    
+    return res.status(400).send({ message: "Payment not created!", error: error})
+  }
+    
+}
+
+// update payment
+exports.updatePayment = async (req, res) => {
+  try{
+    const updatedPayment = await Payment.findByIdAndUpdate(req.params.paymentId, {$set: req.body}, { new: true })
+    
+    if (!updatedPayment) {
+      return res.status(400).send({ message: "Could not update payment"})
+    }
+    return res.status(200).send({ message: "Payment updated successfully", updatedPayment})
+  } catch (error) {
+    //console.log(error)
+    res.status(400).send({ error: "An error has occured, unable to update payment!"})
+  }
+}
+
+// delete payment
+exports.deletePayment = async (req, res) => {
+  try {
+    const deletedPayment = await Payment.findByIdAndDelete(req.params.paymentId) //the await is very important here
+    if (!deletedPayment) {
+      return res.status(400).send({ message: " Could not delete payment"})
+    }
+    return res.status(200).send({ message: "Payment deleted successfully"})
+  } catch (error) {
+    return res.status(400).send({ error: "An error has occurd, unable to delete payment"})
+  }
+}
+
+exports.paymentsList = async (req, res, next) => {
+  try {
+    const payments = await Payment.find({})
+    res.json(payments)
+  } catch (error) {
+    res.status(400)
+    next(error)
+  }
+};
+
+exports.paymentDetails = async (req, res, next) => {
+  try {
+    const payment = await Payment.findById(req.params.paymentId)
+    res.json(payment)
+  } catch (error) {
+    res.status(400).send({ message: "Payment Not found!"})
   }
 }

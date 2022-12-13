@@ -21,7 +21,7 @@ const paymentSchema = new mongoose.Schema(
 		paymentNumber: { type: Number, unique: true },
 		date: { type: Date, default: Date.now },
 		paidTo: { type: String, lowercase: true },
-		user_id: {
+		user: {
 			type: Schema.Types.ObjectId,
 			ref: "User",
 			default: null
@@ -30,5 +30,9 @@ const paymentSchema = new mongoose.Schema(
 	}
 )
 
-module.exports = mongoose.model("Receipt", receiptSchema)
+//module.exports = mongoose.model({"Receipt": receiptSchema, "Payment": paymentSchema})
 //module.exports = mongoose.model("Payment", paymentSchema)
+const Receipt = mongoose.model("Receipt", receiptSchema)
+const Payment = mongoose.model("Payment", paymentSchema)
+
+module.exports = { Receipt, Payment }

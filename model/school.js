@@ -8,4 +8,15 @@ const classLevelSchema = new mongoose.Schema (
   }
 )
 
-module.exports = mongoose.model("ClassLevel", classLevelSchema)
+const subjectSchema = new mongoose.Schema (
+  {
+    subjectName: { type: String, lowercase: true },
+    abbr: { type: String, lowercase: true},
+    subjectCode: { type: Number, unique: true }
+  }
+)
+
+const ClassLevel = mongoose.model("ClassLevel", classLevelSchema)
+const Subject = mongoose.model("Subject", subjectSchema)
+
+module.exports = { ClassLevel, Subject }

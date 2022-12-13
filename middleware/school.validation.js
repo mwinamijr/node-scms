@@ -9,4 +9,13 @@ function classLevelValidation(data) {
   return schema.validate(data)
 }
 
-module.exports = { classLevelValidation }
+function subjectValidation(data) {
+  const schema = joi.object({
+    subjectName: joi.string().required(),
+    abbr: joi.string(),
+    subjectCode: joi.number()
+  })
+  return schema.validate(data)
+}
+
+module.exports = { classLevelValidation, subjectValidation }

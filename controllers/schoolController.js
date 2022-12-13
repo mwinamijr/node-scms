@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken")
 
-const ClassLevel = require("../model/school")
-const { classLevelValidation } = require("../middleware/school.validation")
+const { ClassLevel, Subject} = require("../model/school")
+const { classLevelValidation, subjectValidation } = require("../middleware/school.validation")
 
 
 //add class level
@@ -84,5 +84,88 @@ exports.classLevelDetails = async (req, res, next) => {
         res.json(classLevel)
     } catch (error) {
         res.status(400).send({ message: "Class level Not found!"})
+    }
+}
+
+
+//add subject
+exports.addSubject = async (req, res) => {
+  //our add subject logic goes here
+  try {
+    // validate subject input
+    const { error, value } = subjectValidation(req.body);
+    if (error) {
+      return res.status(400).send(error.details[0].message)
+    }
+
+    // check if subject already exists
+    // validate if subject exist in our database
+    const oldSubject = await Subject.findOne({ subjectName: req.body.subjectName });
+
+    if ( oldSubject ) {
+      return res.status(409).send(` subject with that name already exist.`)
+    }
+
+    const createSubjectObj = async (req) => {
+      return {
+        subjectName: req.body.subjectName,
+        subjectCode: req.body.subjectCode,
+        abbr: req.body.abbr
+      };
+    }
+
+    const newSubject = await createSubjectObj(req)
+    const savedSubject = await Subject.create(newSubject)
+    return res.status(200).send({message: "subject created successfully!", subject: savedSubject})
+  } catch (error) {
+    console.log(error)
+    return res.status(400).send({ message: "subject not created!", error: error})
+  }
+    
+}
+
+// update subject
+exports.updateSubject = async (req, res) => {
+  try{
+    const updatedSubject = await Subject.findByIdAndUpdate(req.params.subjectId, {$set: req.body}, { new: true })
+    
+    if (!updatedSubject) {
+      return res.status(400).send({ message: "Could not update subject"})
+    }
+    return res.status(200).send({ message: "subject updated successfully", updatedSubject})
+  } catch (error) {
+    res.status(400).send({ error: "An error has occured, unable to update subject!"})
+  }
+}
+
+// delete subject
+exports.deleteSubject = async (req, res) => {
+  try {
+    const deletedSubject = await User.findByIdAndDelete(req.params.subjectId) //the await is very important here
+    if (!deletedSubject) {
+      return res.status(400).send({ message: " Could not delete subject"})
+    }
+    return res.status(200).send({ message: "subject deleted successfully"})
+  } catch (error) {
+    return res.status(400).send({ error: "An error has occurd, unable to delete subject"})
+  }
+}
+
+exports.subjectList = async (req, res, next) => {
+  try {
+    const subjects = await Subject.find({})
+    res.json(subjects)
+  } catch (error) {
+    res.status(400)
+    next(Error)
+  }
+};
+
+exports.subjectDetails = async (req, res, next) => {
+    try {
+        const subject = await Subject.findById(req.params.subjectId)
+        res.json(subject)
+    } catch (error) {
+        res.status(400).send({ message: "subject Not found!"})
     }
 }

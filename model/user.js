@@ -7,7 +7,9 @@ const userSchema = new mongoose.Schema(
   email: { type: String, unique: true, lowercase: true },
   password: { type: String },
   phone: { type: String, match: /^[0-9]{10}$/ },
-  userRole: [{ type: String, lowercase: true }],
+  isAdmin: { type: Boolean },
+  isAccountant: { type: Boolean },
+  isTeacher: { type: Boolean },
   },
   { timestamps: true}
 );

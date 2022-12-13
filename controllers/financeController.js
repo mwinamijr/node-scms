@@ -1,5 +1,5 @@
 const Student = require("../model/student")
-const User = require("../model/user")
+//const User = require("../model/user")
 const Receipt = require("../model/finance")
 
 // Add receipt
@@ -10,18 +10,17 @@ exports.addReceipt = async (req, res) => {
     // validate if receipt exist in our database
     const oldReceipt = await Receipt.findOne({ receiptNumber: req.body.receiptNumber });
 
+    //console.log(req.body)
     if ( oldReceipt ) {
       return res.status(409).send(` Receipt with number ${req.body.receiptNumber } already exist.`)
     }
-    const student = await Student.findOne({firstName: req.body.firstName})
-    //console.log(clevel)
-
+    const student = await Student.findOne({firstName: req.body.student})
+    //console.log(student)
     const createReceiptObj = async (req) => {
       return {
-        receiptNumber: req.body.receipt,
+        receiptNumber: req.body.receiptNumber,
         receivedFrom: req.body.receivedFrom,
         paidFor: req.body.paidFor,
-        lastName: req.body.lastName,
         student: student,
         amount: req.body.amount
       };
@@ -66,7 +65,7 @@ exports.deleteReceipt = async (req, res) => {
 }
 exports.receiptsList = async (req, res, next) => {
   try {
-    const receipts = await Receiot.find({})
+    const receipts = await Receipt.find({})
     res.json(receipts)
   } catch (error) {
     res.status(400)

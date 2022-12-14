@@ -65,7 +65,11 @@ exports.login = async (req, res) => {
     // create and assign jwt
     const token = await jwt.sign({_id: foundUser._id}, TOKEN_KEY)
 
-    return res.status(200).header("auth-token", token).send({"auth-token": token, userId: foundUser._id})
+    return res.status(200).header("auth-token", token).send({
+      "auth-token": token, firstName: foundUser.firstName, lastName: foundUser.lastName,
+      phone: foundUser.phone, email: foundUser.email, isAdmin: foundUser.isAdmin,
+      isTeacher: foundUser.isTeacher, isAccountant: foundUser.isAccountant
+    })
   } catch (error) {
     console.log(error)
     return res.status(400).send(error)

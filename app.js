@@ -3,6 +3,8 @@ require("./config/database").connect();
 
 const express = require("express");
 const app = express()
+const bodyParser = require("body-parser");
+const cors = require("cors");
 
 const userRoute = require("./routes/userRoutes")
 const studentRoute = require("./routes/studentRoutes")
@@ -10,12 +12,14 @@ const schoolRoute = require("./routes/schoolRoutes")
 const financeRoute = require("./routes/financeRoutes")
 
 app.use(express.json())
+app.use(bodyParser.json());
+app.use(cors());
 
 //routes to handle requests
-app.use("/users", userRoute)
-app.use("/students", studentRoute)
-app.use("/school", schoolRoute)
-app.use("/finance", financeRoute)
+app.use("/api/users", userRoute)
+app.use("/api/students", studentRoute)
+app.use("/api/school", schoolRoute)
+app.use("/api/finance", financeRoute)
 
 //handle error requests
 app.get("/", (req, res) => {

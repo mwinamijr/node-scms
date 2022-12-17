@@ -10,6 +10,7 @@ const TOKEN_KEY = process.env.TOKEN_KEY
 //Register
 exports.register = async (req, res) => {
   //our register logic goes here
+  //console.log(req.body)
   try {
     
     // validate user input
@@ -34,6 +35,8 @@ exports.register = async (req, res) => {
         email: req.body.email,
         password: bcrypt.hashSync(req.body.password, 10),
         isAdmin: req.body.isAdmin,
+        isAccountant: req.body.isAccountant,
+        isTeacher: req.body.isTeacher,
         phone: req.body.phone,
       };
     }
@@ -51,6 +54,7 @@ exports.register = async (req, res) => {
 //Login
 exports.login = async (req, res) => {
   //our login logic goes here
+  //console.log(req.body)
   const  { error } = loginValidation(req.body);
   if (error) return res.status(400).send(error.details[0].message)
 

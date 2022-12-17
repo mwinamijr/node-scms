@@ -12,7 +12,8 @@ const receiptSchema = new mongoose.Schema (
 			ref: "Student",
 			default: null
 		 },
-		amount: { type: Number }
+		amount: { type: Number },
+		receivedBy: {type: String, lowercase: true }
 	}
 )
 
@@ -26,7 +27,8 @@ const paymentSchema = new mongoose.Schema(
 			ref: "User",
 			default: null
 		},
-		amount: { type: Number }
+		amount: { type: Number },
+		paidBy: {type: String, lowercase: true }
 	}
 )
 

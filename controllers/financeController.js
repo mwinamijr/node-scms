@@ -15,6 +15,7 @@ exports.addReceipt = async (req, res) => {
       return res.status(409).send(` Receipt with number ${req.body.receiptNumber } already exist.`)
     }
     const student = await Student.findOne({firstName: req.body.student})
+    const accountant = await User.findOne({firstName: req.body.receivedBy})
     //console.log(student)
     const createReceiptObj = async (req) => {
       return {
@@ -22,7 +23,8 @@ exports.addReceipt = async (req, res) => {
         receivedFrom: req.body.receivedFrom,
         paidFor: req.body.paidFor,
         student: student,
-        amount: req.body.amount
+        amount: req.body.amount,
+        receivedBy: accountant
       };
     }
 
@@ -95,6 +97,7 @@ exports.addPayment = async (req, res) => {
       return res.status(409).send({message:` Payment with number ${req.body.paymentNumber } already exist.`, oldPayment})
     }
     const user = await User.findOne({email: req.body.user})
+    const accountant = await User.findOne({firstName: req.body.paidBy})
     //console.log(user)
     const createPaymentObj = async (req) => {
       return {
@@ -102,7 +105,8 @@ exports.addPayment = async (req, res) => {
         paidTo: req.body.paidTo,
         paidFor: req.body.paidFor,
         user: user,
-        amount: req.body.amount
+        amount: req.body.amount,
+        paidBy: accountant
       };
     }
 

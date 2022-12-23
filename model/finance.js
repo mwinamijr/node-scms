@@ -27,6 +27,7 @@ const paymentSchema = new mongoose.Schema(
 			ref: "User",
 			default: null
 		},
+		paidFor: { type: String, lowercase: true },
 		amount: { type: Number },
 		paidBy: {type: String, lowercase: true }
 	}

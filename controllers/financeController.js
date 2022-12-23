@@ -24,7 +24,7 @@ exports.addReceipt = async (req, res) => {
         paidFor: req.body.paidFor,
         student: student,
         amount: req.body.amount,
-        receivedBy: accountant
+        receivedBy: req.body.receivedBy
       };
     }
 
@@ -106,7 +106,7 @@ exports.addPayment = async (req, res) => {
         paidFor: req.body.paidFor,
         user: user,
         amount: req.body.amount,
-        paidBy: accountant
+        paidBy: req.body.paidBy
       };
     }
 

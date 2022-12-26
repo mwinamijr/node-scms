@@ -2,14 +2,15 @@ const bcrypt = require("bcryptjs/dist/bcrypt");
 const jwt = require("jsonwebtoken")
 
 
-const User = require("../model/user")
-const { registerValidation, loginValidation } = require("../middleware/validation")
+const User = require("../model/User")
+const { registerValidation, loginValidation } = require("../middleware/user.validation")
 const TOKEN_KEY = process.env.TOKEN_KEY
 
 
 //Register
 exports.register = async (req, res) => {
   //our register logic goes here
+  //console.log(req.body)
   try {
     
     // validate user input
@@ -34,6 +35,8 @@ exports.register = async (req, res) => {
         email: req.body.email,
         password: bcrypt.hashSync(req.body.password, 10),
         isAdmin: req.body.isAdmin,
+        isAccountant: req.body.isAccountant,
+        isTeacher: req.body.isTeacher,
         phone: req.body.phone,
       };
     }
@@ -51,6 +54,7 @@ exports.register = async (req, res) => {
 //Login
 exports.login = async (req, res) => {
   //our login logic goes here
+  //console.log(req.body)
   const  { error } = loginValidation(req.body);
   if (error) return res.status(400).send(error.details[0].message)
 
@@ -65,7 +69,11 @@ exports.login = async (req, res) => {
     // create and assign jwt
     const token = await jwt.sign({_id: foundUser._id}, TOKEN_KEY)
 
-    return res.status(200).header("auth-token", token).send({"auth-token": token, userId: foundUser._id})
+    return res.status(200).header("auth-token", token).send({
+      "auth-token": token, firstName: foundUser.firstName, lastName: foundUser.lastName,
+      phone: foundUser.phone, email: foundUser.email, isAdmin: foundUser.isAdmin,
+      isTeacher: foundUser.isTeacher, isAccountant: foundUser.isAccountant
+    })
   } catch (error) {
     console.log(error)
     return res.status(400).send(error)
@@ -75,7 +83,9 @@ exports.login = async (req, res) => {
 // update user
 exports.updateUser = async (req, res) => {
   try{
-    req.body.password = bcrypt.hashSync(req.body.password, 10); //encrypt password before updating
+    if (req.body.password) {
+      req.body.password = bcrypt.hashSync(req.body.password, 10); //encrypt password before updating
+    }
     const updatedUser = await User.findByIdAndUpdate(req.params.userId, {$set: req.body}, { new: true })
     
     if (!updatedUser) {
@@ -83,6 +93,7 @@ exports.updateUser = async (req, res) => {
     }
     return res.status(200).send({ message: "User updated successfully", updatedUser})
   } catch (error) {
+    console.log(error)
     res.status(400).send({ error: "An error has occured, unable to update user!"})
   }
 }
@@ -99,7 +110,7 @@ exports.deleteUser = async (req, res) => {
     return res.status(400).send({ error: "An error has occurd, unable to delete user"})
   }
 }
-exports.users = async (req, res, next) => {
+exports.usersList = async (req, res, next) => {
   try {
     const users = await User.find({})
     res.json(users)
@@ -108,3 +119,12 @@ exports.users = async (req, res, next) => {
     next(Error)
   }
 };
+
+exports.userDetails = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.params.userId)
+    res.json(user)
+  } catch (error) {
+    res.status(400).send({ message: "User Not found!"})
+  }
+}

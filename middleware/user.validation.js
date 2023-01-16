@@ -2,12 +2,13 @@ const joi = require("joi")
 
 function registerValidation(data) {
   const schema = joi.object({
+    empId: joi.string().min(7).lowercase(),
     firstName: joi.string().min(4).lowercase().required(),
     lastName: joi.string().min(4).lowercase().required(),
     email: joi.string().min(6).email().required(),
     password: joi.string().min(5).required(),
     phone: joi.string().min(10).max(10),
-    role: joi.array(),
+    salary: joi.number(),
     isAdmin: joi.boolean(),
     isAccountant: joi.boolean(),
     isTeacher: joi.boolean()

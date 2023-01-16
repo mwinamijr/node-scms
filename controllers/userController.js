@@ -30,10 +30,12 @@ exports.register = async (req, res) => {
 
     const createUserObj = async (req) => {
       return {
+        empId: req.body.empId,
         firstName: req.body.firstName,
         lastName: req.body.lastName,
         email: req.body.email,
         password: bcrypt.hashSync(req.body.password, 10),
+        salary: req.body.salary,
         isAdmin: req.body.isAdmin,
         isAccountant: req.body.isAccountant,
         isTeacher: req.body.isTeacher,

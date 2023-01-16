@@ -1,6 +1,7 @@
 const Student = require("../model/student")
 const User = require("../model/User")
 const {Receipt, Payment } = require("../model/finance")
+const passport = require("passport")
 
 // Add receipt
 exports.addReceipt = async (req, res) => {
@@ -65,13 +66,14 @@ exports.deleteReceipt = async (req, res) => {
     return res.status(400).send({ error: "An error has occurd, unable to delete receipt"})
   }
 }
+
 exports.receiptsList = async (req, res, next) => {
   try {
     const receipts = await Receipt.find({})
-    res.json(receipts)
+    res.send(receipts)
   } catch (error) {
-    res.status(400)
-    next(error)
+    console.log(error)
+    res.status(400).send(error)
   }
 };
 
